@@ -29,17 +29,19 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Método responsável por salvar um cartão
+     *
      * @param cardDTO dto recebido na requisição
      * @return retorna o cartão salvo
      */
     public CardDTO save(CardDTO cardDTO) {
         cardDTO.setSaldo(500.0);
         return cardRepository.findByNumeroCartao(cardDTO.getNumeroCartao()).isPresent() ? null
-                : mapper.toDTO(cardRepository.save(mapper.toDocument(cardDTO))) ;
+                : mapper.toDTO(cardRepository.save(mapper.toDocument(cardDTO)));
     }
 
     /**
      * Método responsável por retornar o saldo de um cartão
+     *
      * @param numeroCartao número do cartão que será buscado o saldo
      * @return saldo do cartão
      */
@@ -83,7 +85,4 @@ public class CardServiceImpl implements CardService {
         }
         return Optional.empty();
     }
-
-
-
 }

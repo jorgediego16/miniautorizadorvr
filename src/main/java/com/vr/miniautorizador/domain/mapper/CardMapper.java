@@ -10,5 +10,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CardMapper {
     Card toDocument(CardDTO cardDTO);
+
     CardDTO toDTO(Card card);
 }

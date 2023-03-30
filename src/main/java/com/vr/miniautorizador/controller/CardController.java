@@ -44,8 +44,8 @@ public class CardController {
     public ResponseEntity<String> receiveTransaction(@RequestBody TransacaoDTO transacaoDTO) {
         Optional<TransactionErros> transactionErros = this.cardService.receiveTransaction(transacaoDTO);
         return transactionErros.map(erros ->
-                ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                        .body(erros.toString()))
+                        ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                                .body(erros.toString()))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.CREATED).body("OK"));
     }
 
