@@ -8,7 +8,10 @@ import com.vr.miniautorizador.domain.enums.TransactionErros;
 import com.vr.miniautorizador.domain.mapper.CardMapper;
 import com.vr.miniautorizador.repository.CardRepository;
 import com.vr.miniautorizador.service.CardService;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Optional;
 
@@ -65,9 +68,22 @@ public class CardServiceImpl implements CardService {
         if (card.getSaldo() < transacaoDTO.getValor()) {
             return Optional.of(TransactionErros.SALDO_INSUFICIENTE);
         }
-        card.setSaldo(card.getSaldo() - transacaoDTO.getValor());
-        cardRepository.save(card);
+        double newSaldo = card.getSaldo() - transacaoDTO.getValor();
+        card.setSaldo(newSaldo);
+
+        try {
+            cardRepository.save(card);
+        } catch (OptimisticLockingFailureException e) {
+            // Caso ocorra um erro de concorrência, retorna uma exceção
+            return Optional.of(TransactionErros.CONCORRENCIA);
+        }
+
+        if (newSaldo < 0) {
+            return Optional.of(TransactionErros.SALDO_INSUFICIENTE);
+        }
         return Optional.empty();
     }
+
+
 
 }
